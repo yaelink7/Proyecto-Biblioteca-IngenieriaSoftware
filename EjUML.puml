@@ -1,0 +1,20 @@
+@startuml
+class gestionBancaria.CuentaBancaria{
+    - titular: String
+    - saldo: double
+    CuentaBancaria(String titular, double saldo)
+        + String getTitular()
+        + double getSaldo()
+        + void setTitular(String titular)
+    double deposito (double monto)
+    double retiro (double monto)
+    void mostrarSaldo()
+}
+class gestionBancaria.GestionBancaria{
+    main()
+}
+
+gestionBancaria.GestionBancaria ..> gestionBancaria.CuentaBancaria : usa >
+@enduml
+
+
