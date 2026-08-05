@@ -10,11 +10,29 @@
 <project name="BibliotecaIngeSoftware" default="default" basedir=".">
     <description>Builds, tests, and runs the project BibliotecaIngeSoftware.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <!--
+    Etapa 2 - Arreglo de compilacion de las pruebas de GUIBiblia.
+
+    NetBeans lanza la compilacion de las pruebas filtrando por el patron
+    "**/*Test.java", asi que la clase auxiliar test/GUIBiblia/VentanaTestUtils.java
+    queda fuera del lote enviado a javac. Como el target -do-compile-test de
+    build-impl.xml compila con el sourcepath vacio, javac tampoco puede
+    encontrarla por su cuenta y las 9 clases de prueba de ventanas fallan con
+    "cannot find symbol: variable VentanaTestUtils" (59 errores, uno por cada
+    uso de la clase).
+
+    Al fijar aqui javac.test.sourcepath apuntando a la carpeta test, javac si
+    puede localizar y compilar la clase auxiliar de forma implicita. Esta
+    propiedad se define antes de que build-impl.xml la ponga en vacio, y en Ant
+    la primera asignacion es la que manda.
+    -->
+    <property name="javac.test.sourcepath" value="test"/>
     <!--
 
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
+    There exist several targets which are by default empty and which can be
+    used for execution of your tasks. These targets are usually executed
+    before and after some main targets. They are:
 
       -pre-init:                 called before initialization of project properties
       -post-init:                called after initialization of project properties
@@ -40,19 +58,19 @@
             </obfuscate>
         </target>
 
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
+    For list of available properties check the imported
+    nbproject/build-impl.xml file.
 
 
     Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
+    The targets of interest are:
 
       -init-macrodef-javac:     defines macro for javac compilation
       -init-macrodef-junit:     defines macro for junit execution
       -init-macrodef-debug:     defines macro for class debugging
       -init-macrodef-java:      defines macro for class execution
       -do-jar:                  JAR building
-      run:                      execution of project 
+      run:                      execution of project
       -javadoc-build:           Javadoc generation
       test-report:              JUnit report generation
 
@@ -64,10 +82,10 @@
             </exec>
         </target>
 
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
+    Notice that the overridden target depends on the jar target and not only on
+    the compile target as the regular run target does. Again, for a list of available
     properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
+    nbproject/build-impl.xml file.
 
     -->
     <target name="analizar-complejidad" description="Calcula la complejidad ciclomática de forma directa">
@@ -85,20 +103,81 @@
             <arg value="${basedir}/reporte-complejidad.html"/>
         </exec>
     </target>
-    
+
     <target name="analizar-metricas-clase" description="Genera el reporte de WMC, CBO y Cohesión usando un ruleset personalizado">
         <exec executable="C:\pmd-bin-7.26.0\bin\pmd.bat" failonerror="true">
             <arg value="check"/>
             <arg value="-d"/>
             <arg value="${basedir}/src"/>
-            
+
             <arg value="-R"/>
             <arg value="${basedir}/reglas-metricas.xml"/>
-            
+
             <arg value="-f"/>
             <arg value="html"/>
             <arg value="-r"/>
             <arg value="${basedir}/reporte-metricas.html"/>
         </exec>
+    </target>
+
+    <!--
+    Etapa 3 - Medicion de cobertura de codigo con JaCoCo.
+
+    NetBeans 25 ya no ofrece un plugin de "Code Coverage" en su catalogo (los
+    antiguos se basaban en EMMA, discontinuado). Este target corre la suite de
+    JUnit completa con el agente de JaCoCo adjunto y genera un reporte HTML,
+    replicando el mismo patron que ya usan los targets de PMD de arriba.
+
+    Antes de ejecutarlo:
+      1) Descarga la distribucion binaria de JaCoCo (jacoco-x.y.z.zip) desde
+         https://www.jacoco.org/jacoco/ (seccion Releases) y extraela, por
+         ejemplo, a C:\jacoco-0.8.12 (mismo criterio que la carpeta de PMD).
+      2) Ajusta la ruta del atributo "path" del <classpath> de abajo si tu
+         version o carpeta de destino es distinta.
+      3) Asegurate de que MySQL este corriendo (localhost:3306, base
+         "biblioteca") para que las pruebas de GUIBiblia tambien se ejecuten.
+
+    Para correrlo: igual que "analizar-metricas-clase", desde la vista Files
+    de NetBeans, clic derecho sobre build.xml -> Run Target -> Other Targets
+    -> medir-cobertura (o desde una terminal, dentro de la carpeta del
+    proyecto: ant medir-cobertura).
+    -->
+    <target name="medir-cobertura" depends="compile-test"
+            xmlns:jacoco="antlib:org.jacoco.ant"
+            description="Corre las pruebas con el agente de JaCoCo y genera el reporte HTML de cobertura">
+        <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+            <classpath path="C:\jacoco-0.8.12\lib\jacocoant.jar"/>
+        </taskdef>
+
+        <delete file="${basedir}/jacoco.exec" quiet="true"/>
+        <delete dir="${basedir}/coverage-report" quiet="true"/>
+
+        <jacoco:coverage destfile="${basedir}/jacoco.exec">
+            <junit fork="true" forkmode="once" showoutput="true" printsummary="true"
+                   failureproperty="cobertura.tests.failed">
+                <classpath path="${run.test.classpath}"/>
+                <formatter type="brief" usefile="false"/>
+                <batchtest>
+                    <fileset dir="${build.test.classes.dir}" includes="**/*Test.class"/>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+
+        <jacoco:report>
+            <executiondata>
+                <file file="${basedir}/jacoco.exec"/>
+            </executiondata>
+            <structure name="BibliotecaIngeSoftware">
+                <classfiles>
+                    <fileset dir="${build.classes.dir}"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="${src.dir}"/>
+                </sourcefiles>
+            </structure>
+            <html destdir="${basedir}/coverage-report"/>
+        </jacoco:report>
+
+        <echo message="Reporte de cobertura generado en ${basedir}/coverage-report/index.html"/>
     </target>
 </project>

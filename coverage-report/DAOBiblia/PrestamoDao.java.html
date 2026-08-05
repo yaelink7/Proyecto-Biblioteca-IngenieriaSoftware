@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrestamoDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">DAOBiblia</a> &gt; <span class="el_source">PrestamoDao.java</span></div><h1>PrestamoDao.java</h1><pre class="source lang-java linenums">/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+package DAOBiblia;
+
+import java.sql.*;
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L13">public class PrestamoDao {</span>
+    
+    public boolean registrarPrestamo(int idLibro, int idUsuario, String fechaPrestamo, String fechaDevolucion) {
+<span class="nc" id="L16">        String sqlInsert = &quot;insert into prestamos (id_libro, id_usuario, fecha_prestamo, fecha_devolucion, estado) values (?, ?, ?, ?, 'Activo')&quot;;</span>
+<span class="nc" id="L17">        String sqlUpdate = &quot;update libros set Existencias = Existencias - 1 where id = ?&quot;;</span>
+        
+<span class="nc" id="L19">        Connection conn = null;</span>
+
+        try {
+            // Se utiliza la instanciación correcta de tu clase ConexionBD
+<span class="nc" id="L23">            conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L24">            conn.setAutoCommit(false);</span>
+
+<span class="nc" id="L26">            try (PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert)) {</span>
+<span class="nc" id="L27">                stmtInsert.setInt(1, idLibro);</span>
+<span class="nc" id="L28">                stmtInsert.setInt(2, idUsuario);</span>
+<span class="nc" id="L29">                stmtInsert.setString(3, fechaPrestamo); </span>
+<span class="nc" id="L30">                stmtInsert.setString(4, fechaDevolucion);</span>
+<span class="nc" id="L31">                stmtInsert.executeUpdate();</span>
+            }
+<span class="nc" id="L33">            try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate)) {</span>
+<span class="nc" id="L34">                stmtUpdate.setInt(1, idLibro);</span>
+<span class="nc" id="L35">                stmtUpdate.executeUpdate();</span>
+            }
+<span class="nc" id="L37">            conn.commit();</span>
+<span class="nc" id="L38">            return true;</span>
+
+<span class="nc" id="L40">        } catch (SQLException e) {</span>
+<span class="nc" id="L41">            e.printStackTrace();</span>
+            try {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">                if (conn != null) conn.rollback();</span>
+<span class="nc" id="L44">            } catch (SQLException ex) {</span>
+<span class="nc" id="L45">                ex.printStackTrace();</span>
+<span class="nc" id="L46">            }</span>
+<span class="nc" id="L47">            return false;</span>
+        } finally {
+            try {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">                if (conn != null) conn.setAutoCommit(true);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">                if (conn != null) conn.close();</span>
+<span class="nc" id="L52">            } catch (SQLException ex) {</span>
+<span class="nc" id="L53">                ex.printStackTrace();</span>
+<span class="nc" id="L54">            }</span>
+        }
+    }
+    
+    public static class DataPrestamoEspecifica {
+        public int idPrestamo;
+        public String tituloLibro;
+        public String nombreUsuario;
+        public String fechaPrestamo;
+        public String fechaDevolucion;
+        public String estado;
+
+<span class="fc" id="L66">        public DataPrestamoEspecifica(int id, String titulo, String usuario, String fechaP, String fechaD, String estado) {</span>
+<span class="fc" id="L67">            this.idPrestamo = id;</span>
+<span class="fc" id="L68">            this.tituloLibro = titulo;</span>
+<span class="fc" id="L69">            this.nombreUsuario = usuario;</span>
+<span class="fc" id="L70">            this.fechaPrestamo = fechaP;</span>
+<span class="fc" id="L71">            this.fechaDevolucion = fechaD;</span>
+<span class="fc" id="L72">            this.estado = estado;</span>
+<span class="fc" id="L73">        }</span>
+    }
+
+    public List&lt;DataPrestamoEspecifica&gt; obtenerHistorialPrestamos() {
+<span class="fc" id="L77">        List&lt;DataPrestamoEspecifica&gt; lista = new ArrayList&lt;&gt;();</span>
+        
+<span class="fc" id="L79">        String sql = &quot;select p.id, l.Titulo, u.Nombre, u.Apellido, p.fecha_prestamo, p.fecha_devolucion, p.estado &quot; +</span>
+                     &quot;from prestamos p &quot; +
+                     &quot;inner join libros l on p.id_libro = l.id &quot; +
+                     &quot;inner join usuarios u on p.id_usuario = u.id &quot; +
+                     &quot;order by p.fecha_prestamo desc&quot;;
+
+<span class="fc" id="L85">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="fc" id="L86">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L87">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L90">                String nombreCompleto = rs.getString(&quot;Nombre&quot;) + &quot; &quot; + rs.getString(&quot;Apellido&quot;);</span>
+                
+<span class="fc" id="L92">                lista.add(new DataPrestamoEspecifica(</span>
+<span class="fc" id="L93">                    rs.getInt(&quot;id&quot;),</span>
+<span class="fc" id="L94">                    rs.getString(&quot;Titulo&quot;),</span>
+                    nombreCompleto,
+<span class="fc" id="L96">                    rs.getString(&quot;fecha_prestamo&quot;),</span>
+<span class="fc" id="L97">                    rs.getString(&quot;fecha_devolucion&quot;),</span>
+<span class="fc" id="L98">                    rs.getString(&quot;estado&quot;)</span>
+                ));
+<span class="fc" id="L100">            }</span>
+
+<span class="nc" id="L102">        } catch (SQLException e) {</span>
+<span class="nc" id="L103">            e.printStackTrace();</span>
+<span class="nc" id="L104">            JOptionPane.showMessageDialog(null, &quot;Error al cargar historial: &quot; + e.getMessage());</span>
+<span class="fc" id="L105">        }</span>
+<span class="fc" id="L106">        return lista;</span>
+    }
+    
+    public boolean realizarDevolucion(int idPrestamo) {
+<span class="nc" id="L110">        String sqlUpdatePrestamo = &quot;update prestamos set estado = 'Devuelto' where id = ?&quot;;</span>
+<span class="nc" id="L111">        String sqlUpdateLibro = &quot;update libros set Existencias = Existencias + 1 where id = (select id_libro from prestamos where id = ?)&quot;;</span>
+
+<span class="nc" id="L113">        Connection conn = null;</span>
+        try {
+            // Se utiliza la instanciación correcta de tu clase ConexionBD
+<span class="nc" id="L116">            conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L117">            conn.setAutoCommit(false);</span>
+<span class="nc" id="L118">            try (PreparedStatement stmtLibro = conn.prepareStatement(sqlUpdateLibro)) {</span>
+<span class="nc" id="L119">                stmtLibro.setInt(1, idPrestamo);</span>
+<span class="nc" id="L120">                stmtLibro.executeUpdate();</span>
+            }
+
+<span class="nc" id="L123">            try (PreparedStatement stmtPrestamo = conn.prepareStatement(sqlUpdatePrestamo)) {</span>
+<span class="nc" id="L124">                stmtPrestamo.setInt(1, idPrestamo);</span>
+<span class="nc" id="L125">                stmtPrestamo.executeUpdate();</span>
+            }
+
+<span class="nc" id="L128">            conn.commit();</span>
+<span class="nc" id="L129">            return true;</span>
+
+<span class="nc" id="L131">        } catch (SQLException e) {</span>
+<span class="nc" id="L132">            e.printStackTrace();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            try { if (conn != null) conn.rollback(); } catch (SQLException ex) { }</span>
+<span class="nc" id="L134">            return false;</span>
+        } finally {
+<span class="nc bnc" id="L136" title="All 2 branches missed.">            try { if (conn != null) conn.setAutoCommit(true); } catch (SQLException ex) { }</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

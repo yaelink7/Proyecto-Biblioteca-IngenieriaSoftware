@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Persona.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">ClasesBiblia</a> &gt; <span class="el_source">Persona.java</span></div><h1>Persona.java</h1><pre class="source lang-java linenums">/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+package ClasesBiblia;
+
+
+public class Persona {
+    private int IdUsurero;
+    private String Namae;
+    private String Apellido;
+    private String Calle;
+    private String Colonia;
+    private int numero;
+    private long codigoPostal;
+    private String Correo;
+
+<span class="fc" id="L19">    public Persona(int IdUsurero, String Namae, String Apellido, String Calle, String Colonia, int numero, long codigoPostal, String Correo) {</span>
+<span class="fc" id="L20">        this.IdUsurero = IdUsurero;</span>
+<span class="fc" id="L21">        this.Namae = Namae;</span>
+<span class="fc" id="L22">        this.Apellido = Apellido;</span>
+<span class="fc" id="L23">        this.Calle = Calle;</span>
+<span class="fc" id="L24">        this.Colonia = Colonia;</span>
+<span class="fc" id="L25">        this.numero = numero;</span>
+<span class="fc" id="L26">        this.codigoPostal = codigoPostal;</span>
+<span class="fc" id="L27">        this.Correo = Correo;</span>
+<span class="fc" id="L28">    }</span>
+
+<span class="fc" id="L30">    public Persona(String Namae, String Apellido, String Calle, String Colonia, int numero, long codigoPostal, String Correo) {</span>
+<span class="fc" id="L31">        this.Namae = Namae;</span>
+<span class="fc" id="L32">        this.Apellido = Apellido;</span>
+<span class="fc" id="L33">        this.Calle = Calle;</span>
+<span class="fc" id="L34">        this.Colonia = Colonia;</span>
+<span class="fc" id="L35">        this.numero = numero;</span>
+<span class="fc" id="L36">        this.codigoPostal = codigoPostal;</span>
+<span class="fc" id="L37">        this.Correo = Correo;</span>
+<span class="fc" id="L38">    }</span>
+    
+    public String getApellido() {
+<span class="fc" id="L41">        return Apellido;</span>
+    }
+
+    public String getCalle() {
+<span class="fc" id="L45">        return Calle;</span>
+    }
+
+    public String getColonia() {
+<span class="fc" id="L49">        return Colonia;</span>
+    }
+
+    public int getNumero() {
+<span class="fc" id="L53">        return numero;</span>
+    }
+
+    public long getCodigoPostal() {
+<span class="fc" id="L57">        return codigoPostal;</span>
+    }
+
+    public String getCorreo() {
+<span class="fc" id="L61">        return Correo;</span>
+    }
+
+    public void setApellido(String Apellido) {
+<span class="nc" id="L65">        this.Apellido = Apellido;</span>
+<span class="nc" id="L66">    }</span>
+
+    public void setCalle(String Calle) {
+<span class="nc" id="L69">        this.Calle = Calle;</span>
+<span class="nc" id="L70">    }</span>
+
+    public void setColonia(String Colonia) {
+<span class="nc" id="L73">        this.Colonia = Colonia;</span>
+<span class="nc" id="L74">    }</span>
+
+    public void setNumero(int numero) {
+<span class="nc" id="L77">        this.numero = numero;</span>
+<span class="nc" id="L78">    }</span>
+
+    public void setCodigoPostal(long codigoPostal) {
+<span class="nc" id="L81">        this.codigoPostal = codigoPostal;</span>
+<span class="nc" id="L82">    }</span>
+
+    public void setCorreo(String Correo) {
+<span class="nc" id="L85">        this.Correo = Correo;</span>
+<span class="nc" id="L86">    }</span>
+    
+    
+    public String getNombre(){
+<span class="fc" id="L90">        return Namae;</span>
+    }
+    public void setNombre(String namae){
+<span class="nc" id="L93">        this.Namae=namae;</span>
+<span class="nc" id="L94">    }</span>
+    
+    
+    public int getId(){
+<span class="fc" id="L98">        return IdUsurero;</span>
+    }
+    public void setId(int id){
+<span class="nc" id="L101">        this.IdUsurero=id;</span>
+<span class="nc" id="L102">    }</span>
+
+    public String toString() {
+<span class="nc" id="L105">        return IdUsurero + &quot;,&quot; + Namae + &quot;,&quot; + Apellido + &quot;,&quot; + Calle + &quot;,&quot; + Colonia + &quot;,&quot; + numero + &quot;,&quot; + codigoPostal  + &quot;,&quot; + Correo;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

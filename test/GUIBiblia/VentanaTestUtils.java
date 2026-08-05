@@ -8,12 +8,6 @@ import java.util.concurrent.Callable;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-/**
- * Utilidades comunes para probar las ventanas Swing generadas por el editor
- * de formularios de NetBeans. Construye y cierra las ventanas en el Event
- * Dispatch Thread (EDT), como exige Swing, y permite ubicar componentes
- * hijos sin necesitar acceso a los campos privados generados por el editor.
- */
 final class VentanaTestUtils {
 
     private VentanaTestUtils() {

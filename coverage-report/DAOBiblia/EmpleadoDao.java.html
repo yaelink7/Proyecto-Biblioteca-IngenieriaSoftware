@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmpleadoDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">DAOBiblia</a> &gt; <span class="el_source">EmpleadoDao.java</span></div><h1>EmpleadoDao.java</h1><pre class="source lang-java linenums">/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+package DAOBiblia;
+
+import ClasesBiblia.Empleado;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.*;
+import javax.swing.JOptionPane;
+
+public class EmpleadoDao { 
+    private final File archivoEmpleado;
+    
+    
+<span class="fc" id="L24">    public EmpleadoDao(String rutaArchivo){</span>
+<span class="fc" id="L25">        this.archivoEmpleado = new File(rutaArchivo);</span>
+<span class="fc" id="L26">    }</span>
+
+    
+<span class="nc" id="L29">    public EmpleadoDao() {</span>
+<span class="nc" id="L30">        this.archivoEmpleado = new File(&quot;empleados.csv&quot;);</span>
+<span class="nc" id="L31">    }</span>
+    
+    public void insertarEmpleado(Empleado empleado) {
+<span class="nc" id="L34">        String sql = &quot;insert into empleados (Nombre, Apellido, Calle, Colonia, Numero, CodigoPostal, Correo, TipoEmpleado) values (?,?,?,?,?,?,?,?)&quot;;</span>
+
+<span class="nc" id="L36">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L37">            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+<span class="nc" id="L38">            stmt.setString(1, empleado.getNombre());</span>
+<span class="nc" id="L39">            stmt.setString(2, empleado.getApellido());</span>
+<span class="nc" id="L40">            stmt.setString(3, empleado.getCalle());</span>
+<span class="nc" id="L41">            stmt.setString(4, empleado.getColonia());</span>
+<span class="nc" id="L42">            stmt.setInt(5, empleado.getNumero());</span>
+<span class="nc" id="L43">            stmt.setLong(6, empleado.getCodigoPostal());</span>
+<span class="nc" id="L44">            stmt.setString(7, empleado.getCorreo());</span>
+<span class="nc" id="L45">            stmt.setString(8, empleado.getTipoEmpleado());</span>
+<span class="nc" id="L46">            stmt.executeUpdate();</span>
+            
+<span class="nc" id="L48">            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                if (generatedKeys.next()) {</span>
+<span class="nc" id="L50">                    int idGenerado = generatedKeys.getInt(1);</span>
+<span class="nc" id="L51">                    empleado.setId(idGenerado); </span>
+<span class="nc" id="L52">                    System.out.println(&quot;Empleado insertado con ID: &quot; + idGenerado);</span>
+                }
+            }
+<span class="nc" id="L55">        } catch (SQLException e) {</span>
+<span class="nc" id="L56">            e.printStackTrace();</span>
+<span class="nc" id="L57">            JOptionPane.showMessageDialog(null, &quot;Error al insertar empleado: &quot; + e.getMessage());</span>
+<span class="nc" id="L58">        }</span>
+<span class="nc" id="L59">    }</span>
+
+    public List&lt;Empleado&gt; obtenerEmpleados() {
+<span class="fc" id="L62">        List&lt;Empleado&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L63">        String sql = &quot;select * from empleados&quot;;</span>
+
+<span class="fc" id="L65">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="fc" id="L66">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L67">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L70">                Empleado e = new Empleado(</span>
+<span class="fc" id="L71">                    rs.getInt(&quot;id&quot;),              </span>
+<span class="fc" id="L72">                    rs.getString(&quot;Nombre&quot;),       </span>
+<span class="fc" id="L73">                    rs.getString(&quot;Apellido&quot;),</span>
+<span class="fc" id="L74">                    rs.getString(&quot;Calle&quot;),</span>
+<span class="fc" id="L75">                    rs.getString(&quot;Colonia&quot;),</span>
+<span class="fc" id="L76">                    rs.getInt(&quot;Numero&quot;),</span>
+<span class="fc" id="L77">                    rs.getLong(&quot;CodigoPostal&quot;),   </span>
+<span class="fc" id="L78">                    rs.getString(&quot;Correo&quot;),       </span>
+<span class="fc" id="L79">                    rs.getString(&quot;TipoEmpleado&quot;)</span>
+                );
+<span class="fc" id="L81">                lista.add(e);</span>
+<span class="fc" id="L82">            }</span>
+<span class="nc" id="L83">        } catch (SQLException e) {</span>
+<span class="nc" id="L84">            e.printStackTrace();</span>
+<span class="fc" id="L85">        }</span>
+<span class="fc" id="L86">        return lista;</span>
+    }
+
+    public void actualizarEmpleado(Empleado empleado) {
+<span class="nc" id="L90">        String sql = &quot;update empleados set Nombre=?, Apellido=?, Calle=?, Colonia=?, Numero=?, CodigoPostal=?, Correo=?, TipoEmpleado=? where id=?&quot;;</span>
+<span class="nc" id="L91">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L92">            PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L93">            stmt.setString(1, empleado.getNombre());</span>
+<span class="nc" id="L94">            stmt.setString(2, empleado.getApellido());</span>
+<span class="nc" id="L95">            stmt.setString(3, empleado.getCalle());</span>
+<span class="nc" id="L96">            stmt.setString(4, empleado.getColonia());</span>
+<span class="nc" id="L97">            stmt.setInt(5, empleado.getNumero());</span>
+<span class="nc" id="L98">            stmt.setLong(6, empleado.getCodigoPostal());</span>
+<span class="nc" id="L99">            stmt.setString(7, empleado.getCorreo());</span>
+<span class="nc" id="L100">            stmt.setString(8, empleado.getTipoEmpleado());           </span>
+<span class="nc" id="L101">            stmt.setInt(9, empleado.getId());</span>
+<span class="nc" id="L102">            int filas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (filas &gt; 0) {</span>
+<span class="nc" id="L104">                System.out.println(&quot;Empleado actualizado correctamente.&quot;);</span>
+            }
+<span class="nc" id="L106">        } catch (SQLException e) {</span>
+<span class="nc" id="L107">            e.printStackTrace();</span>
+<span class="nc" id="L108">            JOptionPane.showMessageDialog(null, &quot;Error al actualizar: &quot; + e.getMessage());</span>
+<span class="nc" id="L109">        }</span>
+<span class="nc" id="L110">    }</span>
+    
+    public void eliminarEmpleado(int idEmpleado) {
+<span class="nc" id="L113">        String sql = &quot;delete from empleados where id=?&quot;;</span>
+<span class="nc" id="L114">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L115">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L116">            stmt.setInt(1, idEmpleado);       </span>
+<span class="nc" id="L117">            int filas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (filas &gt; 0) {</span>
+<span class="nc" id="L119">                System.out.println(&quot;Empleado eliminado.&quot;);</span>
+            } else {
+<span class="nc" id="L121">                System.out.println(&quot;No se encontró empleado con ID: &quot; + idEmpleado);</span>
+            }
+<span class="nc" id="L123">        } catch (SQLException e) {</span>
+<span class="nc" id="L124">            e.printStackTrace();</span>
+<span class="nc" id="L125">            JOptionPane.showMessageDialog(null, &quot;Error al eliminar: &quot; + e.getMessage());</span>
+<span class="nc" id="L126">        }</span>
+<span class="nc" id="L127">    }</span>
+
+    // Aquí empieza el manejo de CSV
+    public List&lt;Empleado&gt; cargarEmpleadoCSV() throws IOException {
+<span class="nc" id="L131">        List&lt;Empleado&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (!archivoEmpleado.exists()) {</span>
+<span class="nc" id="L133">            archivoEmpleado.createNewFile();</span>
+<span class="nc" id="L134">            return lista;</span>
+        }
+<span class="nc" id="L136">        try (BufferedReader br = new BufferedReader(new FileReader(archivoEmpleado))) {</span>
+            String linea;
+<span class="nc" id="L138">            boolean primera = true;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            while ((linea = br.readLine()) != null) {</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                if (primera) {</span>
+<span class="nc" id="L141">                    primera = false;</span>
+<span class="nc" id="L142">                    continue;</span>
+                }
+<span class="nc" id="L144">                String[] datosUnidades = linea.split(&quot;,&quot;);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                if (datosUnidades.length == 9) {</span>
+<span class="nc" id="L146">                    Empleado d = new Empleado(</span>
+<span class="nc" id="L147">                            Integer.parseInt(datosUnidades[0]),</span>
+                            datosUnidades[1],
+                            datosUnidades[2],
+                            datosUnidades[3],
+                            datosUnidades[4],
+<span class="nc" id="L152">                            Integer.parseInt(datosUnidades[5]),</span>
+<span class="nc" id="L153">                            Long.parseLong(datosUnidades[6]),</span>
+                            datosUnidades[7],
+                            datosUnidades[8]);
+<span class="nc" id="L156">                    lista.add(d);</span>
+                }
+<span class="nc" id="L158">            }</span>
+        } 
+<span class="nc" id="L160">        return lista;</span>
+    }
+    
+    public void guardarEmpleadoCSV(List&lt;Empleado&gt; emp) throws IOException {
+<span class="nc" id="L164">        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoEmpleado))) {</span>
+            // Encabezado corregido para coincidir con tus 9 campos
+<span class="nc" id="L166">            bw.write(&quot;id,Nombre,Apellido,Calle,Colonia,Numero,CP,Correo,TipoEmpleado&quot;);</span>
+<span class="nc" id="L167">            bw.newLine();</span>
+            // Filas
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            for (Empleado d : emp) {</span>
+<span class="nc" id="L170">                bw.write(d.toStringUsuario());</span>
+<span class="nc" id="L171">                bw.newLine();</span>
+<span class="nc" id="L172">            }</span>
+        }
+<span class="nc" id="L174">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

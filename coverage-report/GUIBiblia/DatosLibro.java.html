@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatosLibro.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">GUIBiblia</a> &gt; <span class="el_source">DatosLibro.java</span></div><h1>DatosLibro.java</h1><pre class="source lang-java linenums">package GUIBiblia;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+
+/**
+ *
+ * @author rober
+ */
+import ClasesBiblia.Libro;
+import DAOBiblia.LibroDao;
+import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.io.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.List;
+public class DatosLibro extends javax.swing.JFrame {
+
+    /**
+     * Creates new form DatosLibro
+     */
+    private DefaultTableModel tableModelLibro;
+    private LibroDao lebroDao;
+    private List&lt;Libro&gt; listaLibros;
+<span class="fc" id="L28">    private int IdULibEditao=-1;</span>
+<span class="fc" id="L29">    public DatosLibro() {</span>
+<span class="fc" id="L30">        initComponents();</span>
+<span class="fc" id="L31">        InicializarComponentesLibro();</span>
+<span class="fc" id="L32">    }</span>
+    
+    private void InicializarComponentesLibro(){
+<span class="fc" id="L35">        tableModelLibro = new DefaultTableModel(new Object[]{&quot;Id&quot;,&quot;Titulo&quot;,&quot;Autor&quot;,&quot;TipoLibro&quot;,&quot;Editorial&quot;,&quot;Existencias&quot;,&quot;AñoPublicacion&quot;,&quot;NumeroPaginas&quot;,&quot;Disponible&quot;},0 );</span>
+<span class="fc" id="L36">        tablaLibro.setModel(tableModelLibro);</span>
+<span class="fc" id="L37">        ajustarColumnas();</span>
+<span class="fc" id="L38">        lebroDao = new LibroDao(&quot;datosLibros.csv&quot;);</span>
+<span class="fc" id="L39">        listaLibros = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        cargarDatosTablaLibro();</span>
+<span class="fc" id="L41">    }</span>
+    
+    private void cargarDatosTablaLibro(){
+        try {
+            //listaLibros = lebroDao.cargarLibrosCSV();
+<span class="fc" id="L46">            listaLibros = lebroDao.obtenerLibros();</span>
+<span class="fc" id="L47">            tableModelLibro.setRowCount(0);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            for(Libro a:listaLibros){</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                String disp = a.isDisponible() ? &quot;Disponible&quot; : &quot;Agotado&quot;;</span>
+<span class="fc" id="L50">                tableModelLibro.addRow(new Object[]{a.getIdLibro(),a.getTitulo(),a.getAutor(),a.getTipoLibro(),a.getEditorial(),a.getExistencias(),a.getAnoPublicacion(),a.getNumpaginas(),disp});</span>
+<span class="fc" id="L51">            }</span>
+<span class="nc" id="L52">        } catch (Exception e) {</span>
+<span class="nc" id="L53">            JOptionPane.showMessageDialog(this, &quot;Error al cargar los datos)&quot;+e.getMessage(),&quot;Error&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L54">        }</span>
+<span class="fc" id="L55">    }</span>
+    
+    private void ajustarColumnas() {
+<span class="fc" id="L58">        javax.swing.table.TableColumnModel columnModel = tablaLibro.getColumnModel();</span>
+<span class="fc" id="L59">        columnModel.getColumn(0).setPreferredWidth(30);</span>
+<span class="fc" id="L60">        columnModel.getColumn(1).setPreferredWidth(200);</span>
+<span class="fc" id="L61">        columnModel.getColumn(2).setPreferredWidth(150);</span>
+<span class="fc" id="L62">        columnModel.getColumn(3).setPreferredWidth(100);</span>
+<span class="fc" id="L63">        columnModel.getColumn(4).setPreferredWidth(100);</span>
+<span class="fc" id="L64">        columnModel.getColumn(5).setPreferredWidth(70);</span>
+<span class="fc" id="L65">        columnModel.getColumn(6).setPreferredWidth(60);</span>
+<span class="fc" id="L66">        columnModel.getColumn(7).setPreferredWidth(60);</span>
+<span class="fc" id="L67">        columnModel.getColumn(8).setPreferredWidth(80);</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="fc" id="L79">        jPanel1 = new javax.swing.JPanel();</span>
+<span class="fc" id="L80">        jLabel1 = new javax.swing.JLabel();</span>
+<span class="fc" id="L81">        jPanel2 = new javax.swing.JPanel();</span>
+<span class="fc" id="L82">        jPanel3 = new javax.swing.JPanel();</span>
+<span class="fc" id="L83">        jScrollPane1 = new javax.swing.JScrollPane();</span>
+<span class="fc" id="L84">        tablaLibro = new javax.swing.JTable();</span>
+<span class="fc" id="L85">        Eliminar = new javax.swing.JButton();</span>
+<span class="fc" id="L86">        Editar = new javax.swing.JButton();</span>
+<span class="fc" id="L87">        Regresar = new javax.swing.JButton();</span>
+
+<span class="fc" id="L89">        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L90">        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());</span>
+
+<span class="fc" id="L92">        jPanel1.setBackground(new java.awt.Color(0, 51, 51));</span>
+
+<span class="fc" id="L94">        jLabel1.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 24)); // NOI18N</span>
+<span class="fc" id="L95">        jLabel1.setForeground(new java.awt.Color(255, 255, 255));</span>
+<span class="fc" id="L96">        jLabel1.setText(&quot;Datos libros&quot;);</span>
+
+<span class="fc" id="L98">        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);</span>
+<span class="fc" id="L99">        jPanel1.setLayout(jPanel1Layout);</span>
+<span class="fc" id="L100">        jPanel1Layout.setHorizontalGroup(</span>
+<span class="fc" id="L101">            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L102">            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L103">                .addGap(37, 37, 37)</span>
+<span class="fc" id="L104">                .addComponent(jLabel1)</span>
+<span class="fc" id="L105">                .addContainerGap(591, Short.MAX_VALUE))</span>
+        );
+<span class="fc" id="L107">        jPanel1Layout.setVerticalGroup(</span>
+<span class="fc" id="L108">            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L109">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L110">                .addContainerGap(34, Short.MAX_VALUE)</span>
+<span class="fc" id="L111">                .addComponent(jLabel1)</span>
+<span class="fc" id="L112">                .addGap(30, 30, 30))</span>
+        );
+
+<span class="fc" id="L115">        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 90));</span>
+
+<span class="fc" id="L117">        jPanel2.setBackground(new java.awt.Color(0, 51, 51));</span>
+
+<span class="fc" id="L119">        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);</span>
+<span class="fc" id="L120">        jPanel2.setLayout(jPanel2Layout);</span>
+<span class="fc" id="L121">        jPanel2Layout.setHorizontalGroup(</span>
+<span class="fc" id="L122">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L123">            .addGap(0, 750, Short.MAX_VALUE)</span>
+        );
+<span class="fc" id="L125">        jPanel2Layout.setVerticalGroup(</span>
+<span class="fc" id="L126">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L127">            .addGap(0, 20, Short.MAX_VALUE)</span>
+        );
+
+<span class="fc" id="L130">        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 750, 20));</span>
+
+<span class="fc" id="L132">        jPanel3.setBackground(new java.awt.Color(204, 204, 204));</span>
+
+<span class="fc" id="L134">        tablaLibro.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 12)); // NOI18N</span>
+<span class="fc" id="L135">        tablaLibro.setModel(new javax.swing.table.DefaultTableModel(</span>
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                &quot;Titulo&quot;, &quot;Autor&quot;, &quot;Tipo de Libro&quot;, &quot;Editorial&quot;, &quot;Ejemplares&quot;
+            }
+        ));
+<span class="fc" id="L146">        jScrollPane1.setViewportView(tablaLibro);</span>
+
+<span class="fc" id="L148">        Eliminar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L149">        Eliminar.setText(&quot;Eliminar&quot;);</span>
+<span class="fc" id="L150">        Eliminar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L151">        Eliminar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L153">                EliminarActionPerformed(evt);</span>
+<span class="nc" id="L154">            }</span>
+        });
+
+<span class="fc" id="L157">        Editar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L158">        Editar.setText(&quot;Editar&quot;);</span>
+<span class="fc" id="L159">        Editar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L160">        Editar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L162">                EditarActionPerformed(evt);</span>
+<span class="nc" id="L163">            }</span>
+        });
+
+<span class="fc" id="L166">        Regresar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L167">        Regresar.setText(&quot;Regresar&quot;);</span>
+<span class="fc" id="L168">        Regresar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L169">        Regresar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L171">                RegresarActionPerformed(evt);</span>
+<span class="nc" id="L172">            }</span>
+        });
+
+<span class="fc" id="L175">        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);</span>
+<span class="fc" id="L176">        jPanel3.setLayout(jPanel3Layout);</span>
+<span class="fc" id="L177">        jPanel3Layout.setHorizontalGroup(</span>
+<span class="fc" id="L178">            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L179">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()</span>
+<span class="fc" id="L180">                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="fc" id="L181">                .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L182">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L183">                .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L184">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L185">                .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L186">                .addContainerGap())</span>
+<span class="fc" id="L187">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()</span>
+<span class="fc" id="L188">                .addGap(0, 14, Short.MAX_VALUE)</span>
+<span class="fc" id="L189">                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 746, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+        );
+<span class="fc" id="L191">        jPanel3Layout.setVerticalGroup(</span>
+<span class="fc" id="L192">            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L193">            .addGroup(jPanel3Layout.createSequentialGroup()</span>
+<span class="fc" id="L194">                .addContainerGap(19, Short.MAX_VALUE)</span>
+<span class="fc" id="L195">                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L196">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L197">                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L198">                    .addComponent(Regresar)</span>
+<span class="fc" id="L199">                    .addComponent(Editar)</span>
+<span class="fc" id="L200">                    .addComponent(Eliminar))</span>
+<span class="fc" id="L201">                .addGap(25, 25, 25))</span>
+        );
+
+<span class="fc" id="L204">        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 70, 760, 420));</span>
+
+<span class="fc" id="L206">        pack();</span>
+<span class="fc" id="L207">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L211">        int filaSeleccionada = tablaLibro.getSelectedRow();</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (filaSeleccionada &gt;= 0) {</span>
+<span class="nc" id="L213">            String tituloLibro = (String) tablaLibro.getValueAt(filaSeleccionada, 1);</span>
+<span class="nc" id="L214">            int confirmar = JOptionPane.showConfirmDialog(this, &quot;¿Estás seguro de Quemar el libro &quot; + tituloLibro + &quot;?\nEsta acción no se puede deshacer.&quot;,</span>
+                &quot;Confirmar Eliminación&quot;,JOptionPane.YES_NO_OPTION);
+
+<span class="nc bnc" id="L217" title="All 2 branches missed.">            if (confirmar == JOptionPane.YES_OPTION) {</span>
+                try {
+<span class="nc" id="L219">                    Libro libroAEliminar = listaLibros.get(filaSeleccionada);</span>
+<span class="nc" id="L220">                    lebroDao.eliminarLibro(libroAEliminar.getIdLibro());</span>
+<span class="nc" id="L221">                    listaLibros.remove(filaSeleccionada);</span>
+<span class="nc" id="L222">                    lebroDao.guardarLibrosCSV(listaLibros);</span>
+<span class="nc" id="L223">                    cargarDatosTablaLibro();</span>
+<span class="nc" id="L224">                    JOptionPane.showMessageDialog(this, &quot;El libro ha ardido hasta las cenizas, ya no se puede recuperar&quot;, &quot;Éxito&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L225">                } catch (IOException e) {</span>
+<span class="nc" id="L226">                    JOptionPane.showMessageDialog(this, &quot;Error con el CSV&quot; + e.getMessage());</span>
+<span class="nc" id="L227">                } catch (Exception e) {</span>
+<span class="nc" id="L228">                    JOptionPane.showMessageDialog(this, &quot;Error al eliminar: &quot; + e.getMessage());</span>
+<span class="nc" id="L229">                }</span>
+            }
+<span class="nc" id="L231">        } else {</span>
+<span class="nc" id="L232">            JOptionPane.showMessageDialog(this, &quot;Por favor, selecciona un libro de la tabla para eliminar.&quot;, &quot;Aviso&quot;, JOptionPane.WARNING_MESSAGE);</span>
+        }
+<span class="nc" id="L234">    }//GEN-LAST:event_EliminarActionPerformed</span>
+
+    private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L238">        int filaSeleccionada = tablaLibro.getSelectedRow();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (filaSeleccionada &gt;= 0) {</span>
+<span class="nc" id="L240">            Libro libroSeleccionado = listaLibros.get(filaSeleccionada);</span>
+<span class="nc" id="L241">            GUILibro ventanaEdicion = new GUILibro();</span>
+<span class="nc" id="L242">            ventanaEdicion.ModoEdicion(libroSeleccionado);</span>
+<span class="nc" id="L243">            ventanaEdicion.setVisible(true);</span>
+<span class="nc" id="L244">            this.dispose();</span>
+<span class="nc" id="L245">        } else {</span>
+<span class="nc" id="L246">            JOptionPane.showMessageDialog(this, &quot;Selecciona minimo un Libro de la tabla para poder editar.&quot;, &quot;Aviso&quot;, JOptionPane.WARNING_MESSAGE);</span>
+        }
+<span class="nc" id="L248">    }//GEN-LAST:event_EditarActionPerformed</span>
+
+    private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L252">        GUILibro ventanal = new GUILibro();</span>
+<span class="nc" id="L253">        ventanal.setVisible(true);</span>
+<span class="nc" id="L254">        this.dispose();</span>
+        
+<span class="nc" id="L256">    }//GEN-LAST:event_RegresarActionPerformed</span>
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //&lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot; Look and feel setting code (optional) &quot;&gt;
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">                if (&quot;Nimbus&quot;.equals(info.getName())) {</span>
+<span class="nc" id="L270">                    javax.swing.UIManager.setLookAndFeel(info.getClassName());</span>
+<span class="nc" id="L271">                    break;</span>
+                }
+            }
+<span class="nc" id="L274">        } catch (ClassNotFoundException ex) {</span>
+<span class="nc" id="L275">            java.util.logging.Logger.getLogger(DatosLibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L276">        } catch (InstantiationException ex) {</span>
+<span class="nc" id="L277">            java.util.logging.Logger.getLogger(DatosLibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L278">        } catch (IllegalAccessException ex) {</span>
+<span class="nc" id="L279">            java.util.logging.Logger.getLogger(DatosLibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L280">        } catch (javax.swing.UnsupportedLookAndFeelException ex) {</span>
+<span class="nc" id="L281">            java.util.logging.Logger.getLogger(DatosLibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L282">        }</span>
+        //&lt;/editor-fold&gt;
+        //&lt;/editor-fold&gt;
+
+        /* Create and display the form */
+<span class="nc" id="L287">        java.awt.EventQueue.invokeLater(new Runnable() {</span>
+            public void run() {
+<span class="nc" id="L289">                new DatosLibro().setVisible(true);</span>
+<span class="nc" id="L290">            }</span>
+        });
+<span class="nc" id="L292">    }</span>
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Editar;
+    private javax.swing.JButton Eliminar;
+    private javax.swing.JButton Regresar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tablaLibro;
+    // End of variables declaration//GEN-END:variables
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

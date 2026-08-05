@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GUILibro.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">GUIBiblia</a> &gt; <span class="el_source">GUILibro.java</span></div><h1>GUILibro.java</h1><pre class="source lang-java linenums">package GUIBiblia;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+
+/**
+ *
+ * @author rober
+ */
+import ClasesBiblia.Libro;
+import DAOBiblia.LibroDao;
+import DAOBiblia.UsuarioDao;
+import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.io.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.List;
+public class GUILibro extends javax.swing.JFrame {
+
+    /**
+     * Creates new form Libro
+     */
+    private DefaultTableModel tableModelLibro;
+    private LibroDao lebroDao;
+    private List&lt;Libro&gt; listaLibros;
+<span class="fc" id="L29">    private int IdULibEditao=-1;</span>
+<span class="fc" id="L30">    public GUILibro() {    </span>
+<span class="fc" id="L31">        initComponents();</span>
+<span class="fc" id="L32">        InicializarComponentesLibro();</span>
+<span class="fc" id="L33">        Actualizar.setVisible(false);</span>
+<span class="fc" id="L34">    }</span>
+    
+    private void InicializarComponentesLibro(){
+<span class="fc" id="L37">        tableModelLibro = new DefaultTableModel(new Object[]{&quot;Id&quot;,&quot;Titulo&quot;,&quot;Autor&quot;,&quot;TipoLibro&quot;,&quot;Editorial&quot;,&quot;Existencias&quot;,&quot;AñoPublicacion&quot;,&quot;NumeroPaginas&quot;,&quot;Disponible&quot;},0 );</span>
+<span class="fc" id="L38">        lebroDao = new LibroDao(&quot;datosLibros.csv&quot;);</span>
+<span class="fc" id="L39">        listaLibros = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        cargarDatosTablaLibro();</span>
+<span class="fc" id="L41">    }</span>
+    
+    private void cargarDatosTablaLibro(){
+        try {
+            //listaLibros = lebroDao.cargarLibrosCSV();
+<span class="fc" id="L46">            listaLibros = lebroDao.obtenerLibros();</span>
+<span class="fc" id="L47">            tableModelLibro.setRowCount(0);            </span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            for(Libro a:listaLibros){</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                String disp = a.isDisponible() ? &quot;Disponible&quot; : &quot;Agotado&quot;;</span>
+<span class="fc" id="L50">                tableModelLibro.addRow(new Object[]{a.getIdLibro(),a.getTitulo(),a.getAutor(),a.getTipoLibro(),a.getEditorial(),a.getExistencias(),a.getAnoPublicacion(),a.getNumpaginas(),disp});</span>
+<span class="fc" id="L51">            }</span>
+<span class="nc" id="L52">        } catch (Exception e) {</span>
+<span class="nc" id="L53">            JOptionPane.showMessageDialog(this, &quot;Error al cargar los datos)&quot;+e.getMessage(),&quot;Error&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L54">        }</span>
+<span class="fc" id="L55">    }</span>
+    
+    private void limpiarTextos(){
+<span class="nc" id="L58">        LibTitulo.setText(&quot;&quot;);</span>
+<span class="nc" id="L59">        LibAutor.setText(&quot;&quot;);</span>
+<span class="nc" id="L60">        LibEditorial.setText(&quot;&quot;);</span>
+<span class="nc" id="L61">        LibExistencias.setText(&quot;&quot;);</span>
+<span class="nc" id="L62">        LibNumeroPag.setText(&quot;&quot;);</span>
+<span class="nc" id="L63">        LibAnoPublicacion.setText(&quot;&quot;);</span>
+<span class="nc" id="L64">        LibBox.setSelectedIndex(0);</span>
+<span class="nc" id="L65">    }</span>
+    
+    private Libro guardarenlista(){
+<span class="nc" id="L68">        String Titulo = LibTitulo.getText().trim();</span>
+<span class="nc" id="L69">        String Autor = LibAutor.getText().trim();</span>
+<span class="nc" id="L70">        String TipoLibro = (String)LibBox.getSelectedItem();</span>
+<span class="nc" id="L71">        String Editorial = LibEditorial.getText().trim();</span>
+<span class="nc" id="L72">        String Existenciastex = LibExistencias.getText().trim();</span>
+<span class="nc" id="L73">        String AnoPublicaciontex = LibAnoPublicacion.getText().trim();</span>
+<span class="nc" id="L74">        String NumeroPagtex = LibNumeroPag.getText().trim();</span>
+        
+<span class="nc bnc" id="L76" title="All 14 branches missed.">        if(Titulo.isEmpty()||Autor.isEmpty()||TipoLibro.isEmpty()||Editorial.isEmpty()||Existenciastex.isEmpty()||AnoPublicaciontex.isEmpty()||NumeroPagtex.isEmpty()){</span>
+<span class="nc" id="L77">            JOptionPane.showMessageDialog(this, &quot;Todos los campos se deben de llenar&quot;,&quot;Error&quot;,JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L78">            return null;</span>
+        }
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (Existenciastex.length()&lt;=0) {</span>
+<span class="nc" id="L81">            JOptionPane.showMessageDialog(this, &quot;No puedes registrar un libro si no hay existencias&quot;,&quot;Error&quot;,JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L82">            return null;</span>
+        }
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (AnoPublicaciontex.length()&gt;4) {</span>
+<span class="nc" id="L85">            JOptionPane.showMessageDialog(this, &quot;No creo que hayas conseguido un libro del futuro&quot;,&quot;Error&quot;,JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L86">            return null;</span>
+        }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (AnoPublicaciontex.length()&lt;0) {</span>
+<span class="nc" id="L89">            JOptionPane.showMessageDialog(this, &quot;Año positivo de favor&quot;,&quot;Error&quot;,JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L90">            return null;</span>
+        }
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (NumeroPagtex.length()&lt;=0) {</span>
+<span class="nc" id="L93">            JOptionPane.showMessageDialog(this, &quot;Debe tener al menos una pagina el Libro&quot;,&quot;Error&quot;,JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L94">            return null;</span>
+        }
+        try {
+<span class="nc" id="L97">            int Existencias=Integer.parseInt(Existenciastex);</span>
+<span class="nc" id="L98">            int AnoPublicacion=Integer.parseInt(AnoPublicaciontex);</span>
+<span class="nc" id="L99">            int NumeroPag=Integer.parseInt(NumeroPagtex);</span>
+<span class="nc" id="L100">            boolean disponible = true;</span>
+<span class="nc" id="L101">            return new Libro( Titulo, Autor, TipoLibro, Editorial, Existencias, AnoPublicacion, NumeroPag, disponible);</span>
+<span class="nc" id="L102">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L103">            JOptionPane.showMessageDialog(this, &quot;Las existencias, Año de publicacion y numero de paginas son numeros&quot;, &quot;Error de Formato&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L104">            return null;</span>
+        }
+    }
+    
+    public void ModoEdicion(Libro libroAEditar) {
+<span class="nc" id="L109">        LibTitulo.setText(libroAEditar.getTitulo());</span>
+<span class="nc" id="L110">        LibAutor.setText(libroAEditar.getAutor());</span>
+<span class="nc" id="L111">        LibBox.setSelectedItem(String.valueOf(libroAEditar.getTipoLibro()));</span>
+<span class="nc" id="L112">        LibEditorial.setText(libroAEditar.getEditorial());</span>
+<span class="nc" id="L113">        LibExistencias.setText(String.valueOf(libroAEditar.getExistencias()));</span>
+<span class="nc" id="L114">        LibAnoPublicacion.setText(String.valueOf(libroAEditar.getAnoPublicacion()));</span>
+<span class="nc" id="L115">        LibNumeroPag.setText(String.valueOf(libroAEditar.getNumpaginas()));</span>
+<span class="nc" id="L116">        this.IdULibEditao = libroAEditar.getIdLibro();</span>
+<span class="nc" id="L117">        Registro.setVisible(false);</span>
+<span class="nc" id="L118">        Regresar.setVisible(false);</span>
+<span class="nc" id="L119">        Mostrar.setVisible(false);</span>
+<span class="nc" id="L120">        Actualizar.setVisible(true);</span>
+
+<span class="nc" id="L122">        Librolabel.setText(&quot;Editar Libro&quot;);</span>
+<span class="nc" id="L123">    }</span>
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="fc" id="L134">        jPanel1 = new javax.swing.JPanel();</span>
+<span class="fc" id="L135">        jPanel2 = new javax.swing.JPanel();</span>
+<span class="fc" id="L136">        jPanel3 = new javax.swing.JPanel();</span>
+<span class="fc" id="L137">        Librolabel = new javax.swing.JLabel();</span>
+<span class="fc" id="L138">        jLabel2 = new javax.swing.JLabel();</span>
+<span class="fc" id="L139">        jLabel3 = new javax.swing.JLabel();</span>
+<span class="fc" id="L140">        jLabel4 = new javax.swing.JLabel();</span>
+<span class="fc" id="L141">        jLabel5 = new javax.swing.JLabel();</span>
+<span class="fc" id="L142">        jLabel6 = new javax.swing.JLabel();</span>
+<span class="fc" id="L143">        LibTitulo = new javax.swing.JTextField();</span>
+<span class="fc" id="L144">        LibAutor = new javax.swing.JTextField();</span>
+<span class="fc" id="L145">        LibEditorial = new javax.swing.JTextField();</span>
+<span class="fc" id="L146">        LibExistencias = new javax.swing.JTextField();</span>
+<span class="fc" id="L147">        jPanel4 = new javax.swing.JPanel();</span>
+<span class="fc" id="L148">        LibBox = new javax.swing.JComboBox&lt;&gt;();</span>
+<span class="fc" id="L149">        jLabel7 = new javax.swing.JLabel();</span>
+<span class="fc" id="L150">        LibAnoPublicacion = new javax.swing.JTextField();</span>
+<span class="fc" id="L151">        jLabel8 = new javax.swing.JLabel();</span>
+<span class="fc" id="L152">        LibNumeroPag = new javax.swing.JTextField();</span>
+<span class="fc" id="L153">        Actualizar = new javax.swing.JButton();</span>
+<span class="fc" id="L154">        Mostrar = new javax.swing.JButton();</span>
+<span class="fc" id="L155">        Registro = new javax.swing.JButton();</span>
+<span class="fc" id="L156">        Regresar = new javax.swing.JButton();</span>
+
+<span class="fc" id="L158">        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L159">        setResizable(false);</span>
+<span class="fc" id="L160">        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());</span>
+
+<span class="fc" id="L162">        jPanel1.setBackground(new java.awt.Color(204, 204, 204));</span>
+
+<span class="fc" id="L164">        jPanel2.setBackground(new java.awt.Color(0, 51, 51));</span>
+
+<span class="fc" id="L166">        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);</span>
+<span class="fc" id="L167">        jPanel2.setLayout(jPanel2Layout);</span>
+<span class="fc" id="L168">        jPanel2Layout.setHorizontalGroup(</span>
+<span class="fc" id="L169">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L170">            .addGap(0, 100, Short.MAX_VALUE)</span>
+        );
+<span class="fc" id="L172">        jPanel2Layout.setVerticalGroup(</span>
+<span class="fc" id="L173">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L174">            .addGap(0, 500, Short.MAX_VALUE)</span>
+        );
+
+<span class="fc" id="L177">        jPanel3.setBackground(new java.awt.Color(0, 102, 102));</span>
+
+<span class="fc" id="L179">        Librolabel.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 24)); // NOI18N</span>
+<span class="fc" id="L180">        Librolabel.setForeground(new java.awt.Color(255, 255, 255));</span>
+<span class="fc" id="L181">        Librolabel.setText(&quot;Libro&quot;);</span>
+
+<span class="fc" id="L183">        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);</span>
+<span class="fc" id="L184">        jPanel3.setLayout(jPanel3Layout);</span>
+<span class="fc" id="L185">        jPanel3Layout.setHorizontalGroup(</span>
+<span class="fc" id="L186">            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L187">            .addGroup(jPanel3Layout.createSequentialGroup()</span>
+<span class="fc" id="L188">                .addGap(34, 34, 34)</span>
+<span class="fc" id="L189">                .addComponent(Librolabel)</span>
+<span class="fc" id="L190">                .addContainerGap(571, Short.MAX_VALUE))</span>
+        );
+<span class="fc" id="L192">        jPanel3Layout.setVerticalGroup(</span>
+<span class="fc" id="L193">            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L194">            .addGroup(jPanel3Layout.createSequentialGroup()</span>
+<span class="fc" id="L195">                .addGap(20, 20, 20)</span>
+<span class="fc" id="L196">                .addComponent(Librolabel)</span>
+<span class="fc" id="L197">                .addContainerGap(14, Short.MAX_VALUE))</span>
+        );
+
+<span class="fc" id="L200">        jLabel2.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L201">        jLabel2.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L202">        jLabel2.setText(&quot;Titulo:&quot;);</span>
+
+<span class="fc" id="L204">        jLabel3.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L205">        jLabel3.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L206">        jLabel3.setText(&quot;Autor:&quot;);</span>
+
+<span class="fc" id="L208">        jLabel4.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L209">        jLabel4.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L210">        jLabel4.setText(&quot;Tipo de Libro:&quot;);</span>
+
+<span class="fc" id="L212">        jLabel5.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L213">        jLabel5.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L214">        jLabel5.setText(&quot;Editorial:&quot;);</span>
+
+<span class="fc" id="L216">        jLabel6.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L217">        jLabel6.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L218">        jLabel6.setText(&quot;Existencias:&quot;);</span>
+
+<span class="fc" id="L220">        LibExistencias.setColumns(6);</span>
+
+<span class="fc" id="L222">        jPanel4.setBackground(new java.awt.Color(0, 102, 102));</span>
+<span class="fc" id="L223">        jPanel4.setForeground(new java.awt.Color(0, 153, 153));</span>
+
+<span class="fc" id="L225">        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);</span>
+<span class="fc" id="L226">        jPanel4.setLayout(jPanel4Layout);</span>
+<span class="fc" id="L227">        jPanel4Layout.setHorizontalGroup(</span>
+<span class="fc" id="L228">            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L229">            .addGap(0, 650, Short.MAX_VALUE)</span>
+        );
+<span class="fc" id="L231">        jPanel4Layout.setVerticalGroup(</span>
+<span class="fc" id="L232">            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L233">            .addGap(0, 10, Short.MAX_VALUE)</span>
+        );
+
+<span class="fc" id="L236">        LibBox.setModel(new javax.swing.DefaultComboBoxModel&lt;&gt;(new String[] { &quot;Terror&quot;, &quot;Fantasia&quot;, &quot;Mitologia&quot;, &quot;Historia&quot;, &quot;Comedia&quot;, &quot;Aventura&quot;, &quot;Infantil&quot;, &quot;Suspenso&quot;, &quot;Romance&quot;, &quot;Misterio&quot;, &quot;Educativo&quot; }));</span>
+
+<span class="fc" id="L238">        jLabel7.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L239">        jLabel7.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L240">        jLabel7.setText(&quot;Año Publicacion:&quot;);</span>
+
+<span class="fc" id="L242">        LibAnoPublicacion.setColumns(6);</span>
+
+<span class="fc" id="L244">        jLabel8.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 0, 14)); // NOI18N</span>
+<span class="fc" id="L245">        jLabel8.setForeground(new java.awt.Color(0, 0, 0));</span>
+<span class="fc" id="L246">        jLabel8.setText(&quot;Numero de paginas:&quot;);</span>
+
+<span class="fc" id="L248">        LibNumeroPag.setColumns(6);</span>
+
+<span class="fc" id="L250">        Actualizar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L251">        Actualizar.setText(&quot;Actualizar&quot;);</span>
+<span class="fc" id="L252">        Actualizar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L253">        Actualizar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L255">                ActualizarActionPerformed(evt);</span>
+<span class="nc" id="L256">            }</span>
+        });
+
+<span class="fc" id="L259">        Mostrar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L260">        Mostrar.setText(&quot;Mostrar&quot;);</span>
+<span class="fc" id="L261">        Mostrar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L262">        Mostrar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L264">                MostrarActionPerformed(evt);</span>
+<span class="nc" id="L265">            }</span>
+        });
+
+<span class="fc" id="L268">        Registro.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L269">        Registro.setText(&quot;Registrar&quot;);</span>
+<span class="fc" id="L270">        Registro.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L271">        Registro.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L273">                RegistroActionPerformed(evt);</span>
+<span class="nc" id="L274">            }</span>
+        });
+
+<span class="fc" id="L277">        Regresar.setFont(new java.awt.Font(&quot;Modern No. 20&quot;, 1, 14)); // NOI18N</span>
+<span class="fc" id="L278">        Regresar.setText(&quot;Regresar&quot;);</span>
+<span class="fc" id="L279">        Regresar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 204, 204), new java.awt.Color(0, 204, 204), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 153, 153)));</span>
+<span class="fc" id="L280">        Regresar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L282">                RegresarActionPerformed(evt);</span>
+<span class="nc" id="L283">            }</span>
+        });
+
+<span class="fc" id="L286">        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);</span>
+<span class="fc" id="L287">        jPanel1.setLayout(jPanel1Layout);</span>
+<span class="fc" id="L288">        jPanel1Layout.setHorizontalGroup(</span>
+<span class="fc" id="L289">            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L290">            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L291">                .addGap(391, 391, 391)</span>
+<span class="fc" id="L292">                .addComponent(Actualizar)</span>
+<span class="fc" id="L293">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="fc" id="L294">                .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L295">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L296">                .addComponent(Registro, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L297">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L298">                .addComponent(Mostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L299">                .addGap(17, 17, 17))</span>
+<span class="fc" id="L300">            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L301">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L302">                    .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L303">                        .addGap(96, 96, 96)</span>
+<span class="fc" id="L304">                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L305">                    .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L306">                        .addGap(100, 100, 100)</span>
+<span class="fc" id="L307">                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L308">                    .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L309">                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L310">                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L311">                            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L312">                                .addGap(38, 38, 38)</span>
+<span class="fc" id="L313">                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)</span>
+<span class="fc" id="L314">                                    .addComponent(jLabel2)</span>
+<span class="fc" id="L315">                                    .addComponent(jLabel3)</span>
+<span class="fc" id="L316">                                    .addComponent(jLabel4)</span>
+<span class="fc" id="L317">                                    .addComponent(jLabel5)</span>
+<span class="fc" id="L318">                                    .addComponent(jLabel6))</span>
+<span class="fc" id="L319">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="fc" id="L320">                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)</span>
+<span class="fc" id="L321">                                    .addComponent(LibTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)</span>
+<span class="fc" id="L322">                                    .addComponent(LibAutor)</span>
+<span class="fc" id="L323">                                    .addComponent(LibBox, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L324">                                    .addComponent(LibEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L325">                                    .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L326">                                        .addComponent(LibExistencias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L327">                                        .addGap(18, 18, 18)</span>
+<span class="fc" id="L328">                                        .addComponent(jLabel7)</span>
+<span class="fc" id="L329">                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="fc" id="L330">                                        .addComponent(LibAnoPublicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))</span>
+<span class="fc" id="L331">                            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L332">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="fc" id="L333">                                .addComponent(jLabel8)</span>
+<span class="fc" id="L334">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="fc" id="L335">                                .addComponent(LibNumeroPag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))</span>
+<span class="fc" id="L336">                .addGap(0, 0, Short.MAX_VALUE))</span>
+        );
+
+<span class="fc" id="L339">        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {LibAnoPublicacion, LibExistencias, LibNumeroPag});</span>
+
+<span class="fc" id="L341">        jPanel1Layout.setVerticalGroup(</span>
+<span class="fc" id="L342">            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L343">            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L344">            .addGroup(jPanel1Layout.createSequentialGroup()</span>
+<span class="fc" id="L345">                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L346">                .addGap(43, 43, 43)</span>
+<span class="fc" id="L347">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L348">                    .addComponent(jLabel2)</span>
+<span class="fc" id="L349">                    .addComponent(LibTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L350">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L351">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L352">                    .addComponent(LibAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L353">                    .addComponent(jLabel3))</span>
+<span class="fc" id="L354">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L355">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L356">                    .addComponent(jLabel4)</span>
+<span class="fc" id="L357">                    .addComponent(LibBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L358">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L359">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L360">                    .addComponent(jLabel5)</span>
+<span class="fc" id="L361">                    .addComponent(LibEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L362">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L363">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L364">                    .addComponent(jLabel6)</span>
+<span class="fc" id="L365">                    .addComponent(LibExistencias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="fc" id="L366">                    .addComponent(jLabel7)</span>
+<span class="fc" id="L367">                    .addComponent(LibAnoPublicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L368">                .addGap(18, 18, 18)</span>
+<span class="fc" id="L369">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="fc" id="L370">                    .addComponent(jLabel8)</span>
+<span class="fc" id="L371">                    .addComponent(LibNumeroPag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="fc" id="L372">                .addGap(105, 105, 105)</span>
+<span class="fc" id="L373">                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)</span>
+<span class="fc" id="L374">                    .addComponent(Actualizar)</span>
+<span class="fc" id="L375">                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="fc" id="L376">                        .addComponent(Regresar)</span>
+<span class="fc" id="L377">                        .addComponent(Registro)</span>
+<span class="fc" id="L378">                        .addComponent(Mostrar)))</span>
+<span class="fc" id="L379">                .addGap(20, 20, 20)</span>
+<span class="fc" id="L380">                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+        );
+
+<span class="fc" id="L383">        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {LibAnoPublicacion, LibExistencias, LibNumeroPag});</span>
+
+<span class="fc" id="L385">        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 500));</span>
+
+<span class="fc" id="L387">        pack();</span>
+<span class="fc" id="L388">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L389">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void MostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MostrarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L393">        DatosLibro ventanal = new DatosLibro();</span>
+<span class="nc" id="L394">        ventanal.setVisible(true);</span>
+<span class="nc" id="L395">        this.dispose();</span>
+<span class="nc" id="L396">    }//GEN-LAST:event_MostrarActionPerformed</span>
+
+    private void RegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegistroActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L400">        Libro nuevo = guardarenlista();</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">        if (nuevo!=null) {</span>
+            try {
+<span class="nc" id="L403">                listaLibros.add(nuevo);</span>
+<span class="nc" id="L404">                lebroDao.insertarLibro(nuevo);</span>
+<span class="nc" id="L405">                lebroDao.guardarLibrosCSV(listaLibros);</span>
+<span class="nc" id="L406">                cargarDatosTablaLibro();</span>
+<span class="nc" id="L407">                limpiarTextos();</span>
+<span class="nc" id="L408">                JOptionPane.showMessageDialog(this, &quot;Guardado&quot;,&quot;Exito&quot;,JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L409">            } catch (IOException e) {</span>
+<span class="nc" id="L410">                JOptionPane.showMessageDialog(this, &quot;Error al guardar&quot;,&quot;Error&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L411">            }</span>
+        }
+<span class="nc" id="L413">    }//GEN-LAST:event_RegistroActionPerformed</span>
+
+    private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L417">        VentanaMani ventanal = new VentanaMani();</span>
+<span class="nc" id="L418">        ventanal.setVisible(true);</span>
+<span class="nc" id="L419">        this.dispose();</span>
+<span class="nc" id="L420">    }//GEN-LAST:event_RegresarActionPerformed</span>
+
+    private void ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActualizarActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L424">        Libro libroEditado = guardarenlista();</span>
+
+<span class="nc bnc" id="L426" title="All 2 branches missed.">        if (libroEditado != null) {</span>
+            try {
+<span class="nc" id="L428">                libroEditado.setIdLibro(IdULibEditao);</span>
+<span class="nc" id="L429">                lebroDao.actualizarLibro(libroEditado);</span>
+<span class="nc" id="L430">                listaLibros=lebroDao.obtenerLibros();</span>
+<span class="nc" id="L431">                lebroDao.guardarLibrosCSV(listaLibros);</span>
+<span class="nc" id="L432">                JOptionPane.showMessageDialog(this, &quot;Libro Actualizao&quot;, &quot;Que capo&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L433">                limpiarTextos();</span>
+<span class="nc" id="L434">                Registro.setVisible(true);</span>
+<span class="nc" id="L435">                Regresar.setVisible(true);</span>
+<span class="nc" id="L436">                Mostrar.setVisible(true);</span>
+<span class="nc" id="L437">                Actualizar.setVisible(false);</span>
+<span class="nc" id="L438">                IdULibEditao = -1;</span>
+<span class="nc" id="L439">                Librolabel.setText(&quot;Libro&quot;);</span>
+<span class="nc" id="L440">                DatosLibro ventanaTabla = new DatosLibro();</span>
+<span class="nc" id="L441">                ventanaTabla.setVisible(true);</span>
+<span class="nc" id="L442">                this.dispose();</span>
+
+<span class="nc" id="L444">            } catch (Exception e) {</span>
+<span class="nc" id="L445">                JOptionPane.showMessageDialog(this, &quot;Error al actualizar: &quot; + e.getMessage());</span>
+<span class="nc" id="L446">            }</span>
+        }
+<span class="nc" id="L448">    }//GEN-LAST:event_ActualizarActionPerformed</span>
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //&lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot; Look and feel setting code (optional) &quot;&gt;
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+<span class="nc bnc" id="L460" title="All 2 branches missed.">            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">                if (&quot;Nimbus&quot;.equals(info.getName())) {</span>
+<span class="nc" id="L462">                    javax.swing.UIManager.setLookAndFeel(info.getClassName());</span>
+<span class="nc" id="L463">                    break;</span>
+                }
+            }
+<span class="nc" id="L466">        } catch (ClassNotFoundException ex) {</span>
+<span class="nc" id="L467">            java.util.logging.Logger.getLogger(GUILibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L468">        } catch (InstantiationException ex) {</span>
+<span class="nc" id="L469">            java.util.logging.Logger.getLogger(GUILibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L470">        } catch (IllegalAccessException ex) {</span>
+<span class="nc" id="L471">            java.util.logging.Logger.getLogger(GUILibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L472">        } catch (javax.swing.UnsupportedLookAndFeelException ex) {</span>
+<span class="nc" id="L473">            java.util.logging.Logger.getLogger(GUILibro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L474">        }</span>
+        //&lt;/editor-fold&gt;
+        //&lt;/editor-fold&gt;
+        //&lt;/editor-fold&gt;
+        //&lt;/editor-fold&gt;
+
+        /* Create and display the form */
+<span class="nc" id="L481">        java.awt.EventQueue.invokeLater(new Runnable() {</span>
+            public void run() {
+<span class="nc" id="L483">                new GUILibro().setVisible(true);</span>
+<span class="nc" id="L484">            }</span>
+        });
+<span class="nc" id="L486">    }</span>
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Actualizar;
+    private javax.swing.JTextField LibAnoPublicacion;
+    private javax.swing.JTextField LibAutor;
+    private javax.swing.JComboBox&lt;String&gt; LibBox;
+    private javax.swing.JTextField LibEditorial;
+    private javax.swing.JTextField LibExistencias;
+    private javax.swing.JTextField LibNumeroPag;
+    private javax.swing.JTextField LibTitulo;
+    private javax.swing.JLabel Librolabel;
+    private javax.swing.JButton Mostrar;
+    private javax.swing.JButton Registro;
+    private javax.swing.JButton Regresar;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    // End of variables declaration//GEN-END:variables
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AltaLibroConsola.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">ConsolaBiblia</a> &gt; <span class="el_source">AltaLibroConsola.java</span></div><h1>AltaLibroConsola.java</h1><pre class="source lang-java linenums">package ConsolaBiblia;
+
+import ClasesBiblia.Libro;
+import DAOBiblia.LibroDao;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+<span class="nc" id="L8">public class AltaLibroConsola {</span>
+
+    public static final String MSG_CAMPOS_VACIOS = &quot;Todos los campos se deben de llenar&quot;;
+    public static final String MSG_SIN_EXISTENCIAS = &quot;No puedes registrar un libro si no hay existencias&quot;;
+    public static final String MSG_ANO_FUTURO = &quot;No creo que hayas conseguido un libro del futuro&quot;;
+    public static final String MSG_ANO_NEGATIVO = &quot;Año positivo de favor&quot;;
+    public static final String MSG_SIN_PAGINAS = &quot;Debe tener al menos una pagina el Libro&quot;;
+    public static final String MSG_FORMATO_NUMERICO = &quot;Las existencias, Año de publicacion y numero de paginas son numeros&quot;;
+    public static final String MSG_EXITO = &quot;Libro guardado con exito&quot;;
+
+    public static void main(String[] args) {
+<span class="fc" id="L19">        Scanner entrada = new Scanner(System.in);</span>
+<span class="fc" id="L20">        ejecutar(entrada, System.out, new LibroDao());</span>
+<span class="fc" id="L21">    }</span>
+
+    public static void ejecutar(Scanner entrada, PrintStream salida, LibroDao dao) {
+<span class="fc" id="L24">        salida.println(&quot;=== Alta de libro ===&quot;);</span>
+
+<span class="fc" id="L26">        salida.print(&quot;Titulo: &quot;);</span>
+<span class="fc" id="L27">        String titulo = leerLinea(entrada);</span>
+<span class="fc" id="L28">        salida.print(&quot;Autor: &quot;);</span>
+<span class="fc" id="L29">        String autor = leerLinea(entrada);</span>
+<span class="fc" id="L30">        salida.print(&quot;Tipo de libro: &quot;);</span>
+<span class="fc" id="L31">        String tipoLibro = leerLinea(entrada);</span>
+<span class="fc" id="L32">        salida.print(&quot;Editorial: &quot;);</span>
+<span class="fc" id="L33">        String editorial = leerLinea(entrada);</span>
+<span class="fc" id="L34">        salida.print(&quot;Existencias: &quot;);</span>
+<span class="fc" id="L35">        String existencias = leerLinea(entrada);</span>
+<span class="fc" id="L36">        salida.print(&quot;Año de publicacion: &quot;);</span>
+<span class="fc" id="L37">        String anoPublicacion = leerLinea(entrada);</span>
+<span class="fc" id="L38">        salida.print(&quot;Numero de paginas: &quot;);</span>
+<span class="fc" id="L39">        String numeroPaginas = leerLinea(entrada);</span>
+
+<span class="fc" id="L41">        Libro libro = construirLibro(titulo, autor, tipoLibro, editorial,</span>
+                existencias, anoPublicacion, numeroPaginas, salida);
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (libro == null) {</span>
+<span class="fc" id="L45">            return;</span>
+        }
+
+<span class="fc" id="L48">        dao.insertarLibro(libro);</span>
+<span class="fc" id="L49">        salida.println(MSG_EXITO + &quot;. ID: &quot; + libro.getIdLibro());</span>
+<span class="fc" id="L50">    }</span>
+
+    public static Libro construirLibro(String titulo, String autor, String tipoLibro,
+            String editorial, String existenciasTexto, String anoPublicacionTexto,
+            String numeroPaginasTexto, PrintStream salida) {
+
+<span class="pc bpc" id="L56" title="2 of 8 branches missed.">        if (titulo.isEmpty() || autor.isEmpty() || tipoLibro.isEmpty() || editorial.isEmpty()</span>
+<span class="pc bpc" id="L57" title="3 of 6 branches missed.">                || existenciasTexto.isEmpty() || anoPublicacionTexto.isEmpty() || numeroPaginasTexto.isEmpty()) {</span>
+<span class="fc" id="L58">            salida.println(MSG_CAMPOS_VACIOS);</span>
+<span class="fc" id="L59">            return null;</span>
+        }
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (existenciasTexto.length() &lt;= 0) {</span>
+<span class="nc" id="L62">            salida.println(MSG_SIN_EXISTENCIAS);</span>
+<span class="nc" id="L63">            return null;</span>
+        }
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (anoPublicacionTexto.length() &gt; 4) {</span>
+<span class="fc" id="L66">            salida.println(MSG_ANO_FUTURO);</span>
+<span class="fc" id="L67">            return null;</span>
+        }
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (anoPublicacionTexto.length() &lt; 0) {</span>
+<span class="nc" id="L70">            salida.println(MSG_ANO_NEGATIVO);</span>
+<span class="nc" id="L71">            return null;</span>
+        }
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (numeroPaginasTexto.length() &lt;= 0) {</span>
+<span class="nc" id="L74">            salida.println(MSG_SIN_PAGINAS);</span>
+<span class="nc" id="L75">            return null;</span>
+        }
+        try {
+<span class="fc" id="L78">            int existencias = Integer.parseInt(existenciasTexto);</span>
+<span class="fc" id="L79">            int anoPublicacion = Integer.parseInt(anoPublicacionTexto);</span>
+<span class="fc" id="L80">            int numeroPaginas = Integer.parseInt(numeroPaginasTexto);</span>
+<span class="fc" id="L81">            boolean disponible = true;</span>
+<span class="fc" id="L82">            return new Libro(titulo, autor, tipoLibro, editorial, existencias,</span>
+                    anoPublicacion, numeroPaginas, disponible);
+<span class="fc" id="L84">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L85">            salida.println(MSG_FORMATO_NUMERICO);</span>
+<span class="fc" id="L86">            return null;</span>
+        }
+    }
+
+    private static String leerLinea(Scanner entrada) {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (!entrada.hasNextLine()) {</span>
+<span class="nc" id="L92">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L94">        return entrada.nextLine().trim();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

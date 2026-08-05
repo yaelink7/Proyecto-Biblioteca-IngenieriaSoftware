@@ -11,16 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * El constructor de GUIEmpleado carga los datos desde la base de datos
- * ({@code EmpleadoDao.obtenerEmpleados()}), por lo que estas pruebas
- * requieren MySQL accesible en localhost:3306 con la base "biblioteca"
- * (usuario/contraseña root/root, tal como está fijado en ConexionBD).
- *
- * Nota: pese a construir un {@code DefaultTableModel} con los empleados,
- * esta ventana nunca lo asocia a un JTable visible (confirmado al
- * ejecutar las pruebas), por eso aquí no se comprueba ninguna tabla.
- */
 public class GUIEmpleadoTest {
 
     private static final int TIMEOUT_MS = 15000;

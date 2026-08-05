@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LibroDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BibliotecaIngeSoftware</a> &gt; <a href="index.source.html" class="el_package">DAOBiblia</a> &gt; <span class="el_source">LibroDao.java</span></div><h1>LibroDao.java</h1><pre class="source lang-java linenums">/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+package DAOBiblia;
+
+import ClasesBiblia.Libro;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.*;
+import javax.swing.JOptionPane;
+
+public class LibroDao {
+    private final File archivoLibro;
+
+<span class="fc" id="L18">    public LibroDao(String rutaArchivo) {</span>
+<span class="fc" id="L19">        this.archivoLibro = new File(rutaArchivo);</span>
+<span class="fc" id="L20">    }</span>
+    
+    // Constructor por defecto para base de datos
+<span class="fc" id="L23">    public LibroDao() {</span>
+<span class="fc" id="L24">        this.archivoLibro = new File(&quot;libros.csv&quot;);</span>
+<span class="fc" id="L25">    }</span>
+
+    public void insertarLibro(Libro libro) {
+<span class="nc" id="L28">        String sql = &quot;insert into libros (Titulo, Autor, TipoLibro, Editorial, Existencias, AñoPublicacion, NumeroPaginas, Disponible) values (?,?,?,?,?,?,?,?)&quot;;</span>
+        
+<span class="nc" id="L30">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L31">             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+             
+<span class="nc" id="L33">            stmt.setString(1, libro.getTitulo());</span>
+<span class="nc" id="L34">            stmt.setString(2, libro.getAutor());</span>
+<span class="nc" id="L35">            stmt.setString(3, libro.getTipoLibro());</span>
+<span class="nc" id="L36">            stmt.setString(4, libro.getEditorial());</span>
+<span class="nc" id="L37">            stmt.setInt(5, libro.getExistencias());</span>
+<span class="nc" id="L38">            stmt.setInt(6, libro.getAnoPublicacion());</span>
+<span class="nc" id="L39">            stmt.setInt(7, libro.getNumpaginas()); </span>
+<span class="nc" id="L40">            stmt.setBoolean(8, libro.isDisponible());</span>
+<span class="nc" id="L41">            stmt.executeUpdate();</span>
+            
+<span class="nc" id="L43">            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                if (generatedKeys.next()) {</span>
+<span class="nc" id="L45">                    int idGenerado = generatedKeys.getInt(1);</span>
+<span class="nc" id="L46">                    libro.setIdLibro(idGenerado);</span>
+<span class="nc" id="L47">                    System.out.println(&quot;Libro insertado con ID: &quot; + idGenerado);</span>
+                }
+            }
+
+<span class="nc" id="L51">        } catch (SQLException e) {</span>
+<span class="nc" id="L52">            e.printStackTrace();</span>
+<span class="nc" id="L53">            JOptionPane.showMessageDialog(null, &quot;Error al insertar libro: &quot; + e.getMessage());</span>
+<span class="nc" id="L54">        }</span>
+<span class="nc" id="L55">    }</span>
+
+    public List&lt;Libro&gt; obtenerLibros() {
+<span class="fc" id="L58">        List&lt;Libro&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L59">        String sql = &quot;select * from libros&quot;;</span>
+
+<span class="fc" id="L61">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="fc" id="L62">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L63">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L66">                Libro l = new Libro(</span>
+<span class="fc" id="L67">                    rs.getInt(&quot;id&quot;),              </span>
+<span class="fc" id="L68">                    rs.getString(&quot;Titulo&quot;),       </span>
+<span class="fc" id="L69">                    rs.getString(&quot;Autor&quot;),</span>
+<span class="fc" id="L70">                    rs.getString(&quot;TipoLibro&quot;),</span>
+<span class="fc" id="L71">                    rs.getString(&quot;Editorial&quot;),</span>
+<span class="fc" id="L72">                    rs.getInt(&quot;Existencias&quot;),</span>
+<span class="fc" id="L73">                    rs.getInt(&quot;AñoPublicacion&quot;),</span>
+<span class="fc" id="L74">                    rs.getInt(&quot;NumeroPaginas&quot;),</span>
+<span class="fc" id="L75">                    rs.getBoolean(&quot;Disponible&quot;)</span>
+                );
+<span class="fc" id="L77">                lista.add(l);</span>
+<span class="fc" id="L78">            }</span>
+
+<span class="nc" id="L80">        } catch (SQLException e) {</span>
+<span class="nc" id="L81">            e.printStackTrace();</span>
+<span class="fc" id="L82">        }</span>
+<span class="fc" id="L83">        return lista;</span>
+    }
+
+    public void actualizarLibro(Libro libro) {
+<span class="nc" id="L87">        String sql = &quot;update libros set Titulo=?, Autor=?, TipoLibro=?, Editorial=?, Existencias=?, AñoPublicacion=?, NumeroPaginas=?, Disponible=? where id=?&quot;;</span>
+
+<span class="nc" id="L89">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L90">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+             
+<span class="nc" id="L92">            stmt.setString(1, libro.getTitulo());</span>
+<span class="nc" id="L93">            stmt.setString(2, libro.getAutor());</span>
+<span class="nc" id="L94">            stmt.setString(3, libro.getTipoLibro());</span>
+<span class="nc" id="L95">            stmt.setString(4, libro.getEditorial());</span>
+<span class="nc" id="L96">            stmt.setInt(5, libro.getExistencias());</span>
+<span class="nc" id="L97">            stmt.setInt(6, libro.getAnoPublicacion());</span>
+<span class="nc" id="L98">            stmt.setInt(7, libro.getNumpaginas());</span>
+<span class="nc" id="L99">            stmt.setBoolean(8, libro.isDisponible());            </span>
+<span class="nc" id="L100">            stmt.setInt(9, libro.getIdLibro());</span>
+            
+<span class="nc" id="L102">            int filas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (filas &gt; 0) {</span>
+<span class="nc" id="L104">                System.out.println(&quot;Libro actualizado correctamente.&quot;);</span>
+            }
+
+<span class="nc" id="L107">        } catch (SQLException e) {</span>
+<span class="nc" id="L108">            e.printStackTrace();</span>
+<span class="nc" id="L109">            JOptionPane.showMessageDialog(null, &quot;Error al actualizar: &quot; + e.getMessage());</span>
+<span class="nc" id="L110">        }</span>
+<span class="nc" id="L111">    }</span>
+
+    public void eliminarLibro(int idLibro) {
+<span class="nc" id="L114">        String sql = &quot;delete from libros where id=?&quot;;</span>
+
+<span class="nc" id="L116">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L117">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L119">            stmt.setInt(1, idLibro);</span>
+            
+<span class="nc" id="L121">            int filas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (filas &gt; 0) {</span>
+<span class="nc" id="L123">                System.out.println(&quot;Libro eliminado.&quot;);</span>
+            } else {
+<span class="nc" id="L125">                System.out.println(&quot;No se encontró libro con ID: &quot; + idLibro);</span>
+            }
+
+<span class="nc" id="L128">        } catch (SQLException e) {</span>
+<span class="nc" id="L129">            e.printStackTrace();</span>
+<span class="nc" id="L130">            JOptionPane.showMessageDialog(null, &quot;Error al eliminar: &quot; + e.getMessage());</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">    }</span>
+    
+    public Libro buscarTitulo(String titulo) {
+<span class="nc" id="L135">        String sql = &quot;select * from libros where Titulo = ?&quot;;</span>
+<span class="nc" id="L136">        Libro librosacado = null;</span>
+
+<span class="nc" id="L138">        try (Connection conn = new ConexionBD().getConexion();</span>
+<span class="nc" id="L139">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L141">            stmt.setString(1, titulo);</span>
+<span class="nc" id="L142">            ResultSet rs = stmt.executeQuery();</span>
+
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L145">                librosacado = new Libro(</span>
+<span class="nc" id="L146">                    rs.getInt(&quot;id&quot;),</span>
+<span class="nc" id="L147">                    rs.getString(&quot;Titulo&quot;),</span>
+<span class="nc" id="L148">                    rs.getString(&quot;Autor&quot;),</span>
+<span class="nc" id="L149">                    rs.getString(&quot;TipoLibro&quot;),</span>
+<span class="nc" id="L150">                    rs.getString(&quot;Editorial&quot;),</span>
+<span class="nc" id="L151">                    rs.getInt(&quot;Existencias&quot;),</span>
+<span class="nc" id="L152">                    rs.getInt(&quot;AñoPublicacion&quot;),</span>
+<span class="nc" id="L153">                    rs.getInt(&quot;NumeroPaginas&quot;),</span>
+<span class="nc" id="L154">                    rs.getBoolean(&quot;Disponible&quot;)</span>
+                );
+            }
+<span class="nc" id="L157">        } catch (SQLException e) {</span>
+<span class="nc" id="L158">            e.printStackTrace();</span>
+<span class="nc" id="L159">        }</span>
+<span class="nc" id="L160">        return librosacado;</span>
+    }
+
+    // --- Manejo de Archivos CSV ---
+
+    public List&lt;Libro&gt; cargarLibrosCSV() throws IOException {
+<span class="fc" id="L166">        List&lt;Libro&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (!archivoLibro.exists()) {</span>
+<span class="fc" id="L168">            archivoLibro.createNewFile();</span>
+<span class="fc" id="L169">            return lista;</span>
+        }
+<span class="fc" id="L171">        try (BufferedReader br = new BufferedReader(new FileReader(archivoLibro))) {</span>
+            String linea;
+<span class="fc" id="L173">            boolean primera = true;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">            while ((linea = br.readLine()) != null) {</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                if (primera) {</span>
+<span class="fc" id="L176">                    primera = false;</span>
+<span class="fc" id="L177">                    continue;</span>
+                }
+<span class="fc" id="L179">                String[] datos = linea.split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">                if (datos.length == 9) { </span>
+<span class="fc" id="L181">                    Libro l = new Libro(</span>
+<span class="fc" id="L182">                            Integer.parseInt(datos[0]),</span>
+                            datos[1],
+                            datos[2],
+                            datos[3],
+                            datos[4],
+<span class="fc" id="L187">                            Integer.parseInt(datos[5]),</span>
+<span class="fc" id="L188">                            Integer.parseInt(datos[6]),</span>
+<span class="fc" id="L189">                            Integer.parseInt(datos[7]),</span>
+<span class="fc" id="L190">                            Boolean.parseBoolean(datos[8])</span>
+                    );
+<span class="fc" id="L192">                    lista.add(l);</span>
+                }
+<span class="fc" id="L194">            }</span>
+        } 
+<span class="fc" id="L196">        return lista;</span>
+    }
+
+    public void guardarLibrosCSV(List&lt;Libro&gt; lista) throws IOException {
+<span class="fc" id="L200">        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoLibro))) {</span>
+            // Encabezado
+<span class="fc" id="L202">            bw.write(&quot;id,Titulo,Autor,TipoLibro,Editorial,Existencias,Año,Paginas,Disponible&quot;);</span>
+<span class="fc" id="L203">            bw.newLine();</span>
+            // Filas
+<span class="fc bfc" id="L205" title="All 2 branches covered.">            for (Libro l : lista) {</span>
+<span class="fc" id="L206">                bw.write(l.toStringLibro()); </span>
+<span class="fc" id="L207">                bw.newLine();</span>
+<span class="fc" id="L208">            }</span>
+        }
+<span class="fc" id="L210">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

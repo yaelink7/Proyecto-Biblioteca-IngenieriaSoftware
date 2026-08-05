@@ -11,16 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * El constructor de GUILibro carga los datos desde la base de datos
- * ({@code LibroDao.obtenerLibros()}), por lo que estas pruebas requieren
- * MySQL accesible en localhost:3306 con la base "biblioteca" (usuario/
- * contraseña root/root, tal como está fijado en ConexionBD).
- *
- * Nota: pese a construir un {@code DefaultTableModel} con los libros,
- * esta ventana nunca lo asocia a un JTable visible (confirmado al
- * ejecutar las pruebas), por eso aquí no se comprueba ninguna tabla.
- */
 public class GUILibroTest {
 
     private static final int TIMEOUT_MS = 15000;

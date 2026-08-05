@@ -1,0 +1,15 @@
+/build/
+/dist/
+
+# Estado local del IDE: contiene rutas absolutas de cada maquina
+/nbproject/private/
+
+# Datos binarios intermedios de JaCoCo (se regeneran con "ant medir-cobertura")
+/jacoco.exec
+
+# Carpetas de trabajo de Claude Code
+/.claude/
+/claude-git-ignore/
+
+# Documentos markdown de trabajo (notas y guias internas, no son entregables)
+*.md

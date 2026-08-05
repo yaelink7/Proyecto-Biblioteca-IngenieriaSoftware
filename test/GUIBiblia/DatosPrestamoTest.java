@@ -11,13 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * El constructor de DatosPrestamo carga el historial desde la base de datos
- * ({@code PrestamoDao.obtenerHistorialPrestamos()}, con INNER JOIN a libros
- * y usuarios), por lo que estas pruebas requieren MySQL accesible en
- * localhost:3306 con la base "biblioteca" (usuario/contraseña root/root,
- * tal como está fijado en ConexionBD).
- */
 public class DatosPrestamoTest {
 
     private static final int TIMEOUT_MS = 15000;
