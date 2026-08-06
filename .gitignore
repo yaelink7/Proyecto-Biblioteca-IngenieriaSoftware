@@ -13,3 +13,6 @@
 
 # Documentos markdown de trabajo (notas y guias internas, no son entregables)
 *.md
+
+# Archivos temporales que Word crea al abrir un .docx
+~$*
